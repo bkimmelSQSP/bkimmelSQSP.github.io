@@ -22,7 +22,7 @@
             });
             localPort.onmessage = ()=>{
                 window.caches.match(urlToCache).then((response)=>{
-                    response.arrayBuffer.then((buffer)=>{
+                    response.arrayBuffer().then((buffer)=>{
                         localPort.postMessage('response', '*', buffer);
                     });
                 });
