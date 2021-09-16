@@ -6,7 +6,7 @@
             window.caches.open('zanytest').then((cache)=>{
                 cache.match(urlToCache).then((response)=>{
                     if(!response){
-                        cache.add()
+                        cache.add(urlToCache)
                             .then(()=>{
                                 window?.parent?.postMessage('common cache ready','*', remotePort);
                             });
