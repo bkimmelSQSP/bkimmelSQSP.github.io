@@ -3,16 +3,20 @@
         <script>
             const {port1: localPort, port2: remotePort} = new MessageChannel();
             const urlToCache = `https://assets.squarespace.com/universal/scripts-compressed/config-vendors-b6b69075bd69ac75a13bd-min.en-US.js`;
+            function signalReady() {
+                console.log('Signal parent');
+                if(window.parent !== self){
+                    window?.parent?.postMessage?.('common cache ready','*', [remotePort]);
+                }
+            }
             window.caches.open('zanytest').then((cache)=>{
                 cache.match(urlToCache).then((response)=>{
                     if(!response){
                         cache.add(urlToCache)
-                            .then(()=>{
-                                window?.parent?.postMessage('common cache ready','*', remotePort);
-                            });
+                            .then(signalReady);
                     }
                     else {
-                        window?.parent?.postMessage('common cache ready','*', remotePort);
+                        signalReady();
                     }
                 });
             });
