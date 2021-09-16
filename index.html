@@ -1,0 +1,31 @@
+<html lang="en">
+    <head>
+        <script>
+            const {port1: localPort, port2: remotePort} = new MessageChannel();
+            const urlToCache = `https://assets.squarespace.com/universal/scripts-compressed/config-vendors-b6b69075bd69ac75a13bd-min.en-US.js`;
+            window.caches.open('zanytest').then((cache)=>{
+                cache.match(urlToCache).then((response)=>{
+                    if(!response){
+                        cache.add()
+                            .then(()=>{
+                                window?.parent?.postMessage('common cache ready','*', remotePort);
+                            });
+                    }
+                    else {
+                        window?.parent?.postMessage('common cache ready','*', remotePort);
+                    }
+                });
+            });
+            localPort.onmessage = ()=>{
+                window.caches.match(urlToCache).then((response)=>{
+                    response.arrayBuffer.then((buffer)=>{
+                        localPort.postMessage('response', '*', buffer);
+                    });
+                });
+            }
+        </script>
+    </head>
+    <body>
+        EMPTY
+    </body>
+</html>
